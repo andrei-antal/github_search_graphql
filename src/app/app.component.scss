@@ -1,10 +1,13 @@
 .app {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .search-container {
   width: 1024px;
+
   padding: 12px;
   // outline: 1px dashed blue;
 }

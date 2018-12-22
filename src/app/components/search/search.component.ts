@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import {debounceTime, pluck} from 'rxjs/operators';
+import { debounceTime, pluck } from 'rxjs/operators';
+import { GithubService } from 'src/app/github.service';
 
 @Component({
   selector: 'ghs-search',
@@ -19,10 +20,8 @@ export class SearchComponent implements OnInit {
       )
       .subscribe((searchText: string) => {
         if (searchText) {
-          console.log(searchText)
           this.search.emit(searchText);
         }
       });
   }
-
 }

@@ -1,5 +1,10 @@
 <div class="app">
   <div class="search-container">
-    <ghs-search></ghs-search>
+    <ghs-search (search)="searchHandler($event)"></ghs-search>
+  </div>
+  <div>
+    <div *ngFor="let user of results">
+      {{user | json}}
+    </div>
   </div>
 </div>

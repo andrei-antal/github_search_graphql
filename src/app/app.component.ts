@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { GithubService } from './github.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ghs-root',
@@ -6,5 +8,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'githubSearch';
+  private querySubscription: Subscription;
+  results;
+  constructor(private ghService: GithubService) { }
+
+  searchHandler(searchText: string) {
+    this.querySubscription = this.ghService.searchForGithubUsers(searchText)
+      .subscribe((res) => {
+        this.results = res;
+      });
+  }
 }
