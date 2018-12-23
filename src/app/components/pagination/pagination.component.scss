@@ -20,11 +20,18 @@
   flex-grow: 1;
   display: flex;
   justify-content: center;
+
+  button {
+    margin: 0 1em;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      color: lightgray;
+      cursor: auto;
+    }
+  }
 }
 
-.pagination-control {
-  margin: 0 1em;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
+

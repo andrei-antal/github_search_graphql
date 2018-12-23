@@ -42,6 +42,12 @@ export interface UserApi {
   };
 }
 
+export interface SearchResult {
+  users: User[];
+  pageInfo: any;
+}
+
+
 export function parseUsers(responseApi: UserApi[]): User[] {
   return responseApi.map(({node}: UserApi) => ({
     name: node.name,

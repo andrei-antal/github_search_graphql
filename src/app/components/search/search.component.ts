@@ -1,21 +1,21 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, pluck } from 'rxjs/operators';
-import { GithubService } from 'src/app/github.service';
 
 @Component({
   selector: 'ghs-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   @Output() search = new EventEmitter<string>();
   @ViewChild('searchInput') searchInput;
+  private inputStream$: Subscription;
 
   ngOnInit() {
-    fromEvent(this.searchInput.nativeElement, 'input')
+    this.inputStream$ = fromEvent(this.searchInput.nativeElement, 'input')
       .pipe(
-        debounceTime(500),
+        debounceTime(300),
         pluck('target', 'value')
       )
       .subscribe((searchText: string) => {
@@ -23,5 +23,9 @@ export class SearchComponent implements OnInit {
           this.search.emit(searchText);
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.inputStream$.unsubscribe();
   }
 }

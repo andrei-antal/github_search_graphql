@@ -3,10 +3,10 @@
     <img class="user-avatar" [src]="user.avatarUrl">
     <div class="user-details">
         <div class="user-name text-overflow ">{{user.name || user.user}}</div>
-        <span class="user-location text-overflow">{{user.location}}</span>
+        <div class="user-location text-overflow">{{user.location || user.email}}</div>
     </div>
     <a [href]="user.url" class="btn">View profile</a>
-    <a [href]="user.lastPr" class="btn">Last opened PR</a>
+    <a [href]="user.lastPr" *ngIf="user.lastPr" class="btn">Last opened PR</a>
   </div>
   <div class="card-stats">
     <div class="stat">

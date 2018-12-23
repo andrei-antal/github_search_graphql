@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
-import { map, pluck, first } from 'rxjs/operators';
-
-import { parseUsers } from './user-search.model';
-import { Subject } from 'rxjs';
-
-
+import { Subject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { User, SearchResult } from './user-search.model';
+import { GithubApiService } from './github-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,102 +11,55 @@ export class GithubService {
   private currentPage: number;
   private currentSearchText: string;
 
-  public readonly pageSize = 10;
+  private results$ = new Subject<{users: User[], pageInfo: any} >();
+  private error$ = new Subject<string>();
+  private graphQlQuery = new Subject<Observable<SearchResult>>();
 
-  private results$ = new Subject();
+  get pageSize() {
+    return this.githubApi.pageSize;
+  }
 
   get results() {
     return this.results$.asObservable();
   }
 
-  constructor(private apollo: Apollo) { }
-
-  searchForGithubUsers(searchText: string) {
-    this.currentSearchText = searchText;
-    this.currentPage = 1;
-    return this.doSearch(null, null);
+  get error() {
+    return this.error$.asObservable();
   }
 
-  getNextPage(cursor) {
-    this.currentPage += 1;
-    this.doSearch(null, cursor);
-  }
-
-  getPrevPage(cursor) {
-    this.currentPage -= 1;
-    this.doSearch(cursor, null);
-  }
-
-  doSearch(firstCursor, lastCursor) {
-    const initialSearch = (!firstCursor && !lastCursor) ? `first: ${this.pageSize}` : '';
-    const firstCursorText = firstCursor ? `last: ${this.pageSize}, before: ${firstCursor}` : '';
-    const lastCursorText = lastCursor ? `first: ${this.pageSize}, after: ${lastCursor}` : '';
-    const githubUsersSearchQuery = gql`
-      query searchUsers($text: String!){
-        search(query: $text, type: USER, ${initialSearch}${firstCursorText}${lastCursorText}) {
-          codeCount
-          pageInfo {
-            endCursor
-            startCursor
-            hasPreviousPage
-            hasNextPage
-          }
-          edges {
-            cursor
-            node {
-              ... on User {
-                name
-                avatarUrl
-                email
-                createdAt
-                location
-                bio
-                url
-                pullRequests(last: 1, orderBy: {field: CREATED_AT, direction: ASC},states: OPEN) {
-                  nodes {
-                    url
-                  }
-                }
-                starredRepositories {
-                  totalCount
-                }
-                followers {
-                  totalCount
-                }
-                repositories {
-                  totalCount
-                }
-                watching {
-                  totalCount
-                }
-              }
-            }
-          }
-        }
-      }
-    `;
-
-    return this.apollo.watchQuery<any>({
-      query: githubUsersSearchQuery,
-      variables: {
-        text: this.currentSearchText,
-        pageSize: this.pageSize
-      }
-    })
-    .valueChanges
-    .pipe(
-      pluck('data', 'search'),
-      map((res: any) => ({
-        users: parseUsers(res.edges),
+  constructor(private githubApi: GithubApiService) {
+    this.graphQlQuery.pipe(
+      switchMap(obs => obs) // avoid race conditions, cancel ongoing request upon new one
+    ).subscribe((result) => {
+      this.results$.next({
+        ...result,
         pageInfo: {
-          ...res.pageInfo,
-          total: res.codeCount,
+          ...result.pageInfo,
           currentPage: this.currentPage
         }
-      }),
-      first()
-    )).subscribe(result => {
-      this.results$.next(result);
+      });
+    }, () => {
+      this.error$.next('Something went wrong.'); // naïve error handling
     });
+  }
+
+  public searchForGithubUsers(searchText: string) {
+    this.currentSearchText = searchText;
+    this.currentPage = 1;
+    this.graphQlQuery.next(this.githubApi.doSearch(this.currentSearchText, null, null));
+  }
+
+  public getNextPage(cursor: string) {
+    this.currentPage += 1;
+    this.graphQlQuery.next(this.githubApi.doSearch(this.currentSearchText, null, cursor));
+  }
+
+  public getPrevPage(cursor: string) {
+    this.currentPage -= 1;
+    this.graphQlQuery.next(this.githubApi.doSearch(this.currentSearchText, cursor, null));
+  }
+
+  public reload() {
+    this.graphQlQuery.next(this.githubApi.doSearch(this.currentSearchText, null, null));
   }
 }

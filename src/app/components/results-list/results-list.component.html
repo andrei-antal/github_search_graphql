@@ -1,6 +1,26 @@
-<div class="results" fxLayout="row wrap">
-  <div class="result-user" fxFlex="0 1 33.3%"  *ngFor="let user of results">
-    <ghs-user-card [user]="user"></ghs-user-card>
+<div class="results" >
+  <div *ngIf="!error else errorResults">
+    <div *ngIf="!loading else loadingResults">
+      <div fxLayout="row wrap" *ngIf="results?.length else emptyResults">
+        <ghs-user-card fxFlex="0 1 33.3%" *ngFor="let user of results" [user]="user"></ghs-user-card>
+      </div>
+      <ng-template #emptyResults>
+          <div *ngIf="!firstRun" class="results-empty">
+            No results.
+          </div>
+        </ng-template>
+    </div>
+    <ng-template #loadingResults>
+      <div class="results-loading">
+        Loading data from the Github API...
+      </div>
+    </ng-template>
   </div>
+  <ng-template #errorResults>
+    <div class="results-error">
+      <div>{{error}}</div>
+      <button (click)="this.reloadSearch.emit()">Retry</button>
+    </div>
+  </ng-template>
 </div>
 

@@ -1,13 +1,14 @@
 <div class="app">
   <div class="container">
     <ghs-search (search)="searchHandler($event)"></ghs-search>
-  </div>
-  <div class="container">
-    <ghs-results-list [results]="results"></ghs-results-list>
-  </div>
-  <div class="container">
+    <ghs-results-list
+      [results]="results"
+      [loading]="isLoading"
+      [error]="error"
+      (reloadSearch)="reloadHandler()"
+    ></ghs-results-list>
     <ghs-pagination
-      *ngIf="pageInfo"
+      *ngIf="pageInfo && !isLoading && !error"
       [totalResults]="pageInfo.total"
       [currentPage]="pageInfo.currentPage"
       [pageSize]="ghService.pageSize"
