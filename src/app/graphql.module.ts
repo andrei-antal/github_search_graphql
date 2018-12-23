@@ -4,7 +4,9 @@ import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import { setContext } from 'apollo-link-context';
 
-const token = 'db557dabdf1613e9adcf3babed5b9c224a80a442';
+const token = ''; // INSERT VALID GITHUB TOKEN
+// https://developer.github.com/v4/guides/forming-calls/#authenticating-with-graphql
+// https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
 
 const authLink = setContext((_, { headers }) => {
   return {
