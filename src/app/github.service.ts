@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { User, SearchResult } from './user-search.model';
 import { GithubApiService } from './github-api.service';
 
@@ -28,8 +28,14 @@ export class GithubService {
   }
 
   constructor(private githubApi: GithubApiService) {
-    this.graphQlQuery.pipe(switchMap(obs => obs)) // cancel ongoing request upon new one
-      .subscribe((result) => {
+    this.graphQlQuery.pipe(
+      switchMap(obs => obs), // cancel ongoing request upon new one
+      catchError(err => of('Something went wrong.')) // naïve error handling
+    ).subscribe((result) => {
+      console.log(result);
+      if (typeof result === 'string') {
+        this.error$.next('Something went wrong.'); // emit error
+      } else {
         // emit new results
         this.results$.next({
           ...result,
@@ -38,9 +44,7 @@ export class GithubService {
             currentPage: this.currentPage
           }
         });
-      }, () => {
-        // emit error
-        this.error$.next('Something went wrong.'); // naïve error handling
+      }
     });
   }
 
