@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
-import { debounceTime, pluck } from 'rxjs/operators';
+import { debounceTime, pluck, tap, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'ghs-search',
@@ -10,15 +10,16 @@ import { debounceTime, pluck } from 'rxjs/operators';
 export class SearchComponent implements OnInit, OnDestroy {
   @Output() search = new EventEmitter<string>();
   @ViewChild('searchInput') searchInput;
-  private inputStream$: Subscription;
+  private inputStream$: Subscription; // input stream form search field, used to emit search values to parent
 
   ngOnInit() {
     this.inputStream$ = fromEvent(this.searchInput.nativeElement, 'input')
       .pipe(
-        debounceTime(300),
-        pluck('target', 'value')
+        debounceTime(250),
+        pluck<UIEvent, string>('target', 'value'),
+        filter(value => value.length >= 3)
       )
-      .subscribe((searchText: string) => {
+      .subscribe(searchText => {
         if (searchText) {
           this.search.emit(searchText);
         }

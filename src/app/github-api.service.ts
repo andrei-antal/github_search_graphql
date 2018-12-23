@@ -5,16 +5,18 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { parseUsers, SearchResult } from './user-search.model';
 
+const PAGE_SIZE = 9;
+
 @Injectable({
   providedIn: 'root'
 })
 export class GithubApiService {
-  public readonly pageSize = 9;
+  public readonly pageSize = PAGE_SIZE;
 
-  constructor(private apollo: Apollo) {
-  }
+  constructor(private apollo: Apollo) { }
 
   public doSearch(searchText: string, firstCursor: string, lastCursor: string): Observable<SearchResult> {
+    // determine the query params used in string with interpolation according to query type (first call, next page, prev page)
     const initialSearch = (!firstCursor && !lastCursor) ? `first: ${this.pageSize}` : '';
     const firstCursorText = firstCursor ? `last: ${this.pageSize}, before: "${firstCursor}"` : '';
     const lastCursorText = lastCursor ? `first: ${this.pageSize}, after: "${lastCursor}"` : '';

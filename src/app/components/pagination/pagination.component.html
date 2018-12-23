@@ -1,13 +1,13 @@
-<div class="pagination">
+<div class="pagination" *ngIf="totalResults > 0">
   <div class="pagination-count">
-    {{totalResults}} results. Showing {{startIndex}} - {{endIndex}}.
+    {{resultsText}}
   </div>
   <div class="pagination-pages">
-    <button (click)="prevHandler()" [disabled]="isFirstPage">
+    <button (click)="previous.emit()" [disabled]="isFirstPage">
       &larr; previous
     </button>
     |
-    <button (click)="nextHandler()" [disabled]="isLastPage">
+    <button (click)="next.emit()" [disabled]="isLastPage">
       next &rarr;
     </button>
   </div>

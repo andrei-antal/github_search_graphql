@@ -1,43 +1,30 @@
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'ghs-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss']
 })
-export class PaginationComponent implements OnInit, OnChanges {
-  @Output() previous = new EventEmitter();
-  @Output() next = new EventEmitter();
+export class PaginationComponent implements OnChanges {
   @Input() totalResults: number;
   @Input() currentPage: number;
   @Input() pageSize: number;
   @Input() isLastPage: boolean;
   @Input() isFirstPage: boolean;
+  @Output() previous = new EventEmitter();
+  @Output() next = new EventEmitter();
 
-  startIndex: number;
-  endIndex: number;
+  public resultsText: string;
 
   constructor() { }
-
-  ngOnInit() {
-    this.setResultIndexes();
-  }
 
   ngOnChanges() {
     this.setResultIndexes();
   }
 
-  setResultIndexes() {
-    this.startIndex = this.pageSize * (this.currentPage - 1) + 1;
-    this.endIndex = this.startIndex + this.pageSize - 1;
+  private setResultIndexes() {
+    const startIndex = this.pageSize * (this.currentPage - 1) + 1;
+    const endIndex = startIndex + this.pageSize - 1;
+    this.resultsText = `${this.totalResults} results. Showing ${startIndex} - ${endIndex}.`;
   }
-
-  prevHandler() {
-    this.previous.emit();
-  }
-
-  nextHandler() {
-    this.next.emit();
-  }
-
 }

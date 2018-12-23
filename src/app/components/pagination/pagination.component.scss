@@ -1,11 +1,11 @@
 :host {
   display: block;
   width: 100%;
+  border-top:  1px solid lightgray;
 }
 
 .pagination {
   width: 100%;
-  border-top:  1px solid lightgray;
   display: flex;
   padding-top: 1em;
   align-items: center;

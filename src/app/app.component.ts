@@ -9,8 +9,8 @@ import { User } from './user-search.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy{
-  private destroy$ = new Subject();
+export class AppComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject(); // used to stop subscription on component destroy
 
   results: User[];
   pageInfo;
@@ -22,8 +22,7 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.ghService.results
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        console.log(this.results)
+      .subscribe(res => {
         this.results = res.users;
         this.pageInfo = res.pageInfo;
         this.isLoading = false;
@@ -37,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy{
       });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }

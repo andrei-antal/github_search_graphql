@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnChanges } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { User } from 'src/app/user-search.model';
 
 @Component({
@@ -11,9 +11,9 @@ export class ResultsListComponent implements OnChanges {
   @Input() loading: boolean;
   @Input() error: string;
   @Output() reloadSearch = new EventEmitter();
-  firstRun = true;
+  public firstRun = true; // used to hide messages before any results are first retrieved
 
-  ngOnChanges(changes) {
+  ngOnChanges(changes: SimpleChanges) {
     if (changes.results && changes.results.currentValue) {
       this.firstRun = false;
     }

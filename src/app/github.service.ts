@@ -8,12 +8,12 @@ import { GithubApiService } from './github-api.service';
   providedIn: 'root'
 })
 export class GithubService {
-  private currentPage: number;
+  private currentPage: number; // keep track of current page of results (we're using cursor based pagination, so we need this variable)
   private currentSearchText: string;
 
-  private results$ = new Subject<{users: User[], pageInfo: any} >();
-  private error$ = new Subject<string>();
-  private graphQlQuery = new Subject<Observable<SearchResult>>();
+  private results$ = new Subject<{users: User[], pageInfo: any} >(); // used to emit search results and pagination data
+  private error$ = new Subject<string>(); // used to emit errors
+  private graphQlQuery = new Subject<Observable<SearchResult>>(); // used internally to avoid race conditions on successive calls
 
   get pageSize() {
     return this.githubApi.pageSize;
@@ -28,24 +28,25 @@ export class GithubService {
   }
 
   constructor(private githubApi: GithubApiService) {
-    this.graphQlQuery.pipe(
-      switchMap(obs => obs) // avoid race conditions, cancel ongoing request upon new one
-    ).subscribe((result) => {
-      this.results$.next({
-        ...result,
-        pageInfo: {
-          ...result.pageInfo,
-          currentPage: this.currentPage
-        }
-      });
-    }, () => {
-      this.error$.next('Something went wrong.'); // naïve error handling
+    this.graphQlQuery.pipe(switchMap(obs => obs)) // cancel ongoing request upon new one
+      .subscribe((result) => {
+        // emit new results
+        this.results$.next({
+          ...result,
+          pageInfo: {
+            ...result.pageInfo,
+            currentPage: this.currentPage
+          }
+        });
+      }, () => {
+        // emit error
+        this.error$.next('Something went wrong.'); // naïve error handling
     });
   }
 
   public searchForGithubUsers(searchText: string) {
-    this.currentSearchText = searchText;
-    this.currentPage = 1;
+    this.currentSearchText = searchText; // store new search text
+    this.currentPage = 1; // reset page count
     this.graphQlQuery.next(this.githubApi.doSearch(this.currentSearchText, null, null));
   }
 
