@@ -2,7 +2,7 @@
   <div class="card-user">
     <img class="user-avatar" [src]="user.avatarUrl">
     <div class="user-details">
-        <div class="user-name text-overflow ">{{user.name}}</div>
+        <div class="user-name text-overflow ">{{user.name || user.user}}</div>
         <span class="user-location text-overflow">{{user.location}}</span>
     </div>
     <a [href]="user.url" class="btn">View profile</a>

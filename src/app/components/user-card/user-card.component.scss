@@ -51,18 +51,19 @@
   line-height: 26px;
   margin: 0 auto 10px auto;
   background: none;
-  border: 1px solid #3c4146;
   border-radius: 15px;
   font-size: 12px;
   font-weight: 600;
   box-sizing: border-box;
   transition: all .3s ease-in-out;
-  color: #3c4146;
   text-align: center;
-
+  background: #3c4146;
+  color: #eef4fc;
+  border: 1px solid white;
   &:hover {
-    background: #3c4146;
-    color: #eef4fc;
+    color: #3c4146;
+    background: white;
+    border: 1px solid #3c4146;
   }
 }
 

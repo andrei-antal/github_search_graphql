@@ -5,4 +5,16 @@
   <div class="container">
     <ghs-results-list [results]="results"></ghs-results-list>
   </div>
+  <div class="container">
+    <ghs-pagination
+      *ngIf="pageInfo"
+      [totalResults]="pageInfo.total"
+      [currentPage]="pageInfo.currentPage"
+      [pageSize]="ghService.pageSize"
+      [isLastPage]="!pageInfo.hasNextPage"
+      [isFirstPage]="!pageInfo.hasPreviousPage"
+      (previous)="prevHandler()"
+      (next)="nextHandler()"
+    ></ghs-pagination>
+  </div>
 </div>

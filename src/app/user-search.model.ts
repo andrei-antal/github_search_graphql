@@ -7,7 +7,7 @@ export interface User {
   location: string;
   bio: string;
   lastPr: string;
-  createdAt: string;//Date;
+  createdAt: Date;
   starred: number;
   followers: number;
   repositories: number;
@@ -42,8 +42,8 @@ export interface UserApi {
   };
 }
 
-export function parseUsers(responseApi: any): User[] {
-  return responseApi.data.search.edges.map(({node}: UserApi) => ({
+export function parseUsers(responseApi: UserApi[]): User[] {
+  return responseApi.map(({node}: UserApi) => ({
     name: node.name,
     user: node.url.split('https://github.com/')[1],
     url: node.url,
@@ -59,3 +59,4 @@ export function parseUsers(responseApi: any): User[] {
     watching: node.watching.totalCount,
   }));
 }
+

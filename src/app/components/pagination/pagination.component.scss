@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pagination {
+  width: 100%;
+  border-top:  1px solid lightgray;
+  display: flex;
+  padding-top: 1em;
+  align-items: center;
+}
+
+.pagination-count {
+  flex-basis: 18em;
+}
+
+.pagination-pages {
+  list-style-type: none;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-control {
+  margin: 0 1em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}

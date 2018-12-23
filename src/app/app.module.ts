@@ -9,13 +9,15 @@ import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ResultsListComponent } from './components/results-list/results-list.component';
 import { UserCardComponent } from './components/user-card/user-card.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
     ResultsListComponent,
-    UserCardComponent
+    UserCardComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

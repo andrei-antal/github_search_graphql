@@ -1,0 +1,14 @@
+<div class="pagination">
+  <div class="pagination-count">
+    {{totalResults}} results. Showing {{startIndex}} - {{endIndex}}.
+  </div>
+  <div class="pagination-pages">
+    <button class="pagination-control" (click)="prevHandler()" [disabled]="isFirstPage">
+      &larr; previous
+    </button>
+    |
+    <button class="pagination-control" (click)="nextHandler()" [disabled]="isLastPage">
+      next &rarr;
+    </button>
+  </div>
+</div>
