@@ -4,7 +4,10 @@ export interface User {
   url: string;
   avatarUrl: string;
   email: string;
-  createdAt: Date;
+  location: string;
+  bio: string;
+  lastPr: string;
+  createdAt: string;//Date;
   starred: number;
   followers: number;
   repositories: number;
@@ -18,7 +21,12 @@ export interface UserApi {
     avatarUrl: string;
     email: string;
     createdAt: string;
+    location: string;
+    bio: string;
     url: string;
+    pullRequests: {
+      nodes: {url: string}[]
+    }
     starredRepositories: {
       totalCount: number;
     },
@@ -34,12 +42,15 @@ export interface UserApi {
   };
 }
 
-export function parseUsers(responseApi: any) {
+export function parseUsers(responseApi: any): User[] {
   return responseApi.data.search.edges.map(({node}: UserApi) => ({
     name: node.name,
     user: node.url.split('https://github.com/')[1],
     url: node.url,
     avatarUrl: node.avatarUrl,
+    location: node.location,
+    bio: node.bio,
+    lastPr: node.pullRequests.nodes[0] ? node.pullRequests.nodes[0].url : null,
     email: node.email,
     createdAt: new Date(node.createdAt),
     starred: node.starredRepositories.totalCount,

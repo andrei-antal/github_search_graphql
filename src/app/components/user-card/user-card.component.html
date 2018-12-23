@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-user">
+    <img class="user-avatar" [src]="user.avatarUrl">
+    <div class="user-details">
+        <div class="user-name text-overflow ">{{user.name}}</div>
+        <span class="user-location text-overflow">{{user.location}}</span>
+    </div>
+    <a [href]="user.url" class="btn">View profile</a>
+    <a [href]="user.lastPr" class="btn">Last opened PR</a>
+  </div>
+  <div class="card-stats">
+    <div class="stat">
+      <span class="stat-value">{{user.repositories}}</span>
+      <span class="stat-name">Repos</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{user.starred}}</span>
+      <span class="stat-name">Starred</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{user.followers}}</span>
+      <span class="stat-name">Followers</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{user.watching}}</span>
+      <span class="stat-name">Watching</span>
+    </div>
+  </div>
+</div>

@@ -21,13 +21,21 @@ export class GithubService {
             startCursor
           }
           edges {
+            cursor
             node {
               ... on User {
                 name
                 avatarUrl
                 email
                 createdAt
+                location
+                bio
                 url
+                pullRequests(last: 1, orderBy: {field: CREATED_AT, direction: ASC},states: OPEN) {
+                  nodes {
+                    url
+                  }
+                }
                 starredRepositories {
                   totalCount
                 }
@@ -45,6 +53,7 @@ export class GithubService {
           }
         }
       }
+
     `;
 
     return this.apollo.watchQuery<any>({
